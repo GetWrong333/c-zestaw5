@@ -11,7 +11,7 @@ Jakub Pawlikowski Grupa 7 Zestaw5
 
 ## Instalacja
 
- git clone https://github.com/GetWrong333/c-zestaw5  //aby zainstalowac repozytorium
+ git clone https://github.com/GetWrong333/c-zestaw5.git  //aby zainstalowac repozytorium
 
 ## Użycie
 
