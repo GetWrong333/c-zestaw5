@@ -1,23 +1,8 @@
-//  drugim kroku musisz zdefiniować kształty, które chcesz rysować, np. koło, kwadrat, prostokąt, trójkąt, itp.
-// (minimum 3). Stwórz abstrakcyjną klasę Figure, z której będą dziedziczyły konkretne figury. Możesz także 
-// zastosować dziedziczenie wielokrotne, czyli np. z klasy Figure może dziedziczyć klasa Rectangle, a z Rectangle
-// może dziedziczyć klasa Square. Każda figura musi posiadać współrzędne np. środka oraz wymiary 
-// pozwalające ją narysować, np. promień w przypadku koła. Każda figura powinna też posiadać funkcję 
-// odpowiedzialną za narysowanie jej na canvasie, np. draw(Canvas &c). Poszczególne piksele obrazka powinny 
-// być „wypełniane” różnymi symbolami, w zależności od tego, czy należą do obszaru figury czy nie. Możemy 
-// np. założyć, że każdy „piksel” obrazka, który należy do figury to #, a każdy piksel, który nie należy do figury to 
-// spacja. To jakie symbole będą wykorzystane powinno być ustalane w pliku konfiguracyjnym (patrz kolejny 
-// podpunkt)
-
-
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
-#include <sstream>
-#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -191,40 +176,154 @@ st.close();
 }};
 
 class Prostokat:public Figure{
+private:
+string plik;
 public:
-Prostokat(int x,int y){
+Prostokat(int x,int y,string s,int srodek1,int srodek2){
 wymiar_x=x;
 wymiar_y=y;
+srodek_x = srodek1;
+srodek_y = srodek2;
+symbol = s;
 }
 void draw(Canvas &c){
-for(int i=0;i<wymiar_y;i++){
-for(int j=0;j<wymiar_x;j++){
-cout<<"#";
+
+
+
+fstream st;
+this->plik = c.plik;
+st.open(plik,ios::in);
+
+vector<string>lines;
+    string line;
+if(st.good()==true){
+    
+    while(getline(st,line)){
+        lines.push_back(line);
+    }
 }
-cout<<endl;
-}}};
+st.close();
+st.open(plik,ios::out);
+cout<<"naniesiony zostanie kwadrat w pliku: "<<plik<<endl;
+
+if( st.good() == true )
+{
+    cout << "Pomyslnie otwarto plik: " << plik<<endl;
+
+
+
+int x = wymiar_x;
+int y_max = srodek_y+1;//srodek x i srodek y wskazuja na lewy gorny rog kwadratu(jego poczatek)
+int x_max = srodek_x+1;
+
+for(int x=0;x<lines.size();x++){
+if(x!=y_max){
+st<<lines[x]<<endl;
+}
+else{
+
+for(int i=0;i<wymiar_y;i++){
+st<<"|";
+for(int z = 0;z<srodek_x;z++){
+    st<<c.wypelniacz;
+}
+for(int j=0;j<wymiar_x;j++){
+st<<symbol;
+}
+
+int h=0;
+while(h!=(c.width-srodek_x-wymiar_x)){
+st<<c.wypelniacz;
+h++;
+}
+st<<"|";
+st<<endl;
+}
+}
+}
+}
+else {cout<<"blad otwierania  pliku"<<endl;};
+
+st.close();
+}
+
+
+};
 
 class Trojkat:public Figure{
 public:
-Trojkat(int x,int y){
+Trojkat(string s,int x,int y,int srodek1,int srodek2){
 wymiar_x=x;
 wymiar_y=y;
-
+srodek_x=srodek1;
+srodek_y=srodek2;
+symbol = s;
 }
 void draw(Canvas &c){
 cout<<"narysowany zostanie trojkat"<<endl;
-int y = wymiar_y;
-for(int i = y;i>0;i--){
+
+
+
+
+
+fstream st;
+this->plik = c.plik;
+st.open(plik,ios::in);
+
+vector<string>lines;
+    string line;
+if(st.good()==true){
+    
+    while(getline(st,line)){
+        lines.push_back(line);
+    }
+}
+st.close();
+st.open(plik,ios::out);
+cout<<"naniesiony zostanie kwadrat w pliku: "<<plik<<endl;
+
+if( st.good() == true )
+{
+    cout << "Pomyslnie otwarto plik: " << plik<<endl;
+
+
+
+int x = wymiar_x;
+int y_max = srodek_y+1;//srodek x i srodek y wskazuja na lewy gorny rog kwadratu(jego poczatek)
+int x_max = srodek_x+1;
+
+for(int x=0;x<lines.size();x++){
+if(x!=y_max){
+st<<lines[x]<<endl;
+}
+else{
+
+for(int i = wymiar_y;i>0;i--){
 int temp = wymiar_y-i;
 for(int j=0;j<temp;j++){
-cout<<" ";}
+st<<c.wypelniacz;}
 for(int m=0;m<i;m++){
-    cout<<"#";
+   st<<symbol;
 }
 cout<<endl;
-}}
+}
 
+int h=0;
+while(h!=(c.width-srodek_x-wymiar_x)){
+st<<c.wypelniacz;
+h++;
+}
+st<<"|";
+st<<endl;
+}
+}
+}
 
+else {cout<<"blad otwierania  pliku"<<endl;};
+
+st.close();
+
+}
 };
 
 
@@ -238,14 +337,13 @@ int main(){
 
 
 
-  Canvas * pt1 = new ASCIICanvas("zadanie2.txt","*",20,10);
+  Canvas * pt1 = new ASCIICanvas("zestaw5.txt","*",20,10);
 Figure * pt2 = new Kwadrat(2,"#",2,1);
-ASCIICanvas tablica("zadanie2.txt"," ",20,10);
-Figure * pt3 = new Kwadrat(3,"*",14,8);
+ASCIICanvas tablica("zestaw5.txt"," ",20,10);
+  Figure*prostokat = new Prostokat(3,4,"#",7,6);
   tablica.narysuj(20,10);
 pt2->draw(tablica);
- pt3->draw(tablica);
-
+prostokat->draw(tablica);
 
 
 
